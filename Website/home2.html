@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WarrantyStatus.Tech</title>
+<style type="text/css">
+body {
+	background-image: url(Images/VectorBackground.jpg);
+	background-repeat: no-repeat;
+}
+body,td,th {
+	color: #FFFFFF;
+}
+</style>
+</head>
+
+	
+	
+<body>
+	
+<script>
+	function WarrantyLookup() {
+		const fetch = require('node-fetch');
+		const btoa = require('btoa'); // node.js doesn't have a built-in function for this
+
+		let servicetags = ServiceTags.join(", ");
+
+		const AuthURI = "https://apigtwb2c.us.dell.com/auth/oauth/v2/token";
+		let ApiKey = l78412a897ffb54c5ea9c05efe3be49157
+		let KeySecret = 298da5801bb94e6999fc8288221d9d2a
+		let OAuth = `${ApiKey}:${KeySecret}`;
+		let EncodedOAuth = btoa(OAuth);
+		let headers = {
+    	'Authorization': `Basic ${EncodedOAuth}`
+		};
+		let Authbody = 'grant_type=client_credentials';
+
+	fetch(AuthURI, {
+		method: 'POST',
+		body: Authbody,
+		headers: headers
+	})
+	.then(response => {
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw new Error(`Server responded with ${response.status}`);
+		}
+	})
+	.then(json => {
+		global.token = json.access_token;
+	})
+	.catch(error => {
+		console.error(error);
+	});
+	}
+</script>	
+	
+<table width="100%" border="0">
+  <tbody>
+    <tr>
+      <td width="200"><img src="Images/HardwareFailure200.jpg" width="200" height="100" alt=""/></td>
+      <td align="center"><h1>WarrantyStatus.Tech</h1></td>
+      <td width="200"><img src="Images/Guaranteed200.png" width="200" height="186" alt=""/></td>
+    </tr>
+    <tr>
+      <td width="200">&nbsp;</td>
+      <td align="center"><form id="form1" name="form1" method="post" onsubmit="return WarrantyLookup(Manufacturer, SerialNumber)">
+        <p>
+          <label for="Manufacturer">Manufacturer:</label>
+          <select name="Manufacturer" id="Manufacturer">
+            <option value="NULL">Select...</option>
+            <option value="Dell">Dell</option>
+            <option value="HP">HP</option>
+            <option value="IBM">IBM</option>
+          </select>
+        </p>
+        <p>
+          <label for="SerialNumber">Serial Number:</label>
+          <input name="SerialNumber" type="text" id="SerialNumber" size="15">
+        </p>
+        <p>
+          <input type="submit" name="submit" id="submit" value="Submit">
+        </p>
+      </form></td>
+      <td width="200">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="200">&nbsp;</td>
+      <td align="center">&nbsp;</td>
+      <td width="200">&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

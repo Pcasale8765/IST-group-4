@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WarrantyStatus.Tech</title>
+
+<style type="text/css">
+body {
+	background-image: url("Images/VectorBackground.jpg");
+	background-repeat: no-repeat;
+}
+body,td,th {
+	color: #FFFFFF;
+}
+</style>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#warrantyForm').submit(function(event) {
+        event.preventDefault(); // Prevent form submission
+        var manufacturer = $('#manufacturer').val();
+        var serialNumber = $('#serialNumber').val();
+        
+        // API credentials
+        var apiKey = 'l78412a897ffb54c5ea9c05efe3be49157';
+        var apiSecret = '298da5801bb94e6999fc8288221d9d2a';
+
+        // API request
+        var apiUrl = 'https://apigtwb2c.us.dell.com/PROD/sbil/eapi/v5/asset-entitlements';
+        var requestData = {
+          apiKey: apiKey,
+          apiSecret: apiSecret,
+          manufacturer: manufacturer,
+          serialNumber: serialNumber
+        };
+
+        $.ajax({
+          type: 'POST',
+          url: apiUrl,
+          data: requestData,
+          success: function(response) {
+            // Display response in iframe
+            $('#warrantyIframe').attr('src', 'data:text/html;charset=utf-8,' + encodeURI(response));
+            $('#warrantyIframe').show();
+          },
+          error: function(xhr, status, error) {
+            // Handle error
+            console.log('Error: ' + error);
+          }
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+<table width="100%" border="0">
+  <tbody>
+    <tr>
+      <td width="200"><img src="Images/HardwareFailure200.jpg" width="200" height="100" alt=""/></td>
+      <td align="center"><img src="Images/WarrantyStatusTechLogo.png" width="400" alt=""/></td>
+      <td width="200"><img src="Images/Guaranteed200.png" width="200" height="186" alt=""/></td>
+    </tr>
+    <tr>
+      <td width="200">&nbsp;</td>
+      <td align="center"> <form id="warrantyForm">
+    <label for="manufacturer">Manufacturer:</label>
+    <select id="manufacturer" name="manufacturer">
+	  <option value="Null">Select...</option>
+      <option value="Dell">Dell</option>
+	  <option value="HP">HP</option>
+	  <option value="IBM">IBM</option>
+    </select>
+    <br>
+    <label for="serialNumber">Serial Number:</label>
+    <input type="text" id="serialNumber" name="serialNumber" required>
+    <br>
+    <button type="submit">Submit</button>
+  </form></td>
+      <td width="200">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="200">&nbsp;</td>
+		
+      <td align="center">
+		  <iframe id="warrantyiFrame" style="display:none;" background-color: #C0C0C0" width="100%" height="300"></iframe></td>
+      <td width="200">&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+	
+	
+	
+</body>
+</html>
