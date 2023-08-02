@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WarrantyStatus.Tech</title>
+    <style>
+        body {
+            background-image: url("static/images/VectorBackground.jpg");
+            background-repeat: no-repeat;
+            background-color: white;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Align content from top to bottom */
+            align-items: center;
+            justify-content: flex-start; /* Align content at the top of the container */
+            height: 100vh;
+        }
+
+        table.no-border, .no-border td {
+            border: none;
+            border-collapse: collapse;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            background-color: black;
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            text-align: left;
+            width: 250px;
+            display: none; /* Initially hide all gallery items */
+        }
+
+        .model {
+            background-color: black;
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            text-align: left;
+            width: 250px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .navigation-buttons button {
+            background-color: #0099cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .navigation-buttons button:hover {
+            background-color: #007a99;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: white; /* Set the font color to white */
+        }
+
+        .footer img {
+            vertical-align: middle; /* Align the image vertically in the footer */
+        }
+    </style>
+    <script>
+        // Global variable for current index
+        let currentIndex = 0;
+
+        function showEntitlement(index) {
+            const entitlements = document.querySelectorAll('.entitlement');
+            entitlements.forEach((entitlement, i) => {
+                if (i === index) {
+                    entitlement.style.display = 'block';
+                } else {
+                    entitlement.style.display = 'none';
+                }
+            });
+        }
+
+        function previousEntitlement() {
+            if (currentIndex > 0) {
+                currentIndex--; // Decrease the current index
+                showEntitlement(currentIndex);
+            }
+        }
+
+        function nextEntitlement(totalEntitlements) {
+            if (currentIndex < totalEntitlements - 1) {
+                currentIndex++; // Increase the current index
+                showEntitlement(currentIndex);
+            }
+        }
+
+        // Initially show the first entitlement
+        window.onload = function() {
+            showEntitlement(currentIndex);
+        };
+    </script>
+</head>
+<body>
+    <table width="100%" border="0">
+        <tbody>
+            <tr>
+                <td width="200" align="center">
+                    <img src="static/images/HardwareFailure200.jpg" width="200" height="100" alt=""/>
+                </td>
+                <td align="center">
+                    <img src="static/images/WarrantyStatusTechLogo.png" width="400" alt=""/>
+                </td>
+                <td width="200" align="center">
+                    <img src="static/images/Guaranteed200.png" width="200" height="186" alt=""/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if success %}
+        {% for result in results %}
+
+            <table class="model">
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Service Tag</td>
+                    <td>{{ result.get('serviceTag') }}</td>
+                </tr>
+                <tr>
+                    <td>Product ID</td>
+                    <td>{{ result.get('productId') }}</td>
+                </tr>
+                <tr>
+                    <td>Product Line Description</td>
+                    <td>{{ result.get('productLineDescription') }}</td>
+                </tr>
+                <tr>
+                    <td>System Description</td>
+                    <td>{{ result.get('systemDescription') }}</td>
+                </tr>
+                <tr>
+                    <td>Country Code</td>
+                    <td>{{ result.get('countryCode') }}</td>
+                </tr>
+            </table>
+
+            <div class="gallery">
+                {% for entitlement in result.get('entitlements', []) %}
+                    <div class="gallery-item entitlement">
+                        <p><strong>Service Level Description:</strong> {{ entitlement.get('serviceLevelDescription') }}</p>
+                        <p><strong>Start Date:</strong> <time datetime="{{ entitlement.get('startDate') }}">{{ entitlement.get('startDate')|formatdate }}</time></p>
+                        <p><strong>End Date:</strong> <time datetime="{{ entitlement.get('endDate') }}">{{ entitlement.get('endDate')|formatdate }}</time></p>
+                        <p><strong>Item Description:</strong> {{ entitlement.get('itemDescription') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="navigation-buttons">
+                <button onclick="previousEntitlement()">Previous</button>
+                <button onclick="nextEntitlement({{ result.entitlements|length }})">Next</button>
+                <br>
+                <br>
+                <button onclick="window.location.href = '{{ url_for('home') }}';">Go Back to Search</button>
+            </div>
+
+        {% endfor %}
+    {% else %}
+        <p>{{ results }}</p>
+    {% endif %}
+
+    <div class="footer">
+        Created by Students at: <br>
+        <img src="static/images/PSU_IST_Students.png" width="200" alt="PSU IST Students">
+    </div>
+</body>
+</html>
